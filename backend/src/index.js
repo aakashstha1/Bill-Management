@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { connectDB } from "./db/conn.js";
+import { connectDB } from "./configs/conn.js";
 import app from "./app.js";
 import { createAdmin } from "./seed/createAdmin.js";
 

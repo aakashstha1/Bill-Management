@@ -13,6 +13,7 @@ export const createAdmin = async () => {
 
     const admin = new User({
       name: process.env.ADMIN_NAME,
+      email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       contact: process.env.ADMIN_CONTACT,
       role: "admin",
