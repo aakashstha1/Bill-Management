@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createUser,
+  getSingleUser,
   getUsers,
   toogleStatus,
   updateUser,
@@ -10,8 +11,9 @@ import { isAuthenticated } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
 router.use(isAuthenticated, authorizeRoles("admin"));
+router.post("/", createUser);
 router.get("/", getUsers);
-router.post("/create", createUser);
+router.get("/:id", getSingleUser);
 router.patch("/:id/update", updateUser);
 router.patch("/:id/status", toogleStatus);
 

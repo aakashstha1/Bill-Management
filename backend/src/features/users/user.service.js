@@ -39,3 +39,10 @@ export const getAllUsers = async () => {
   const users = await User.find({ role: "user" }).sort({ createdAt: -1 });
   return users;
 };
+
+// --------------------------------------------------- Get User By ID -------------------------------------------
+export const getUserById = async (id) => {
+  const user = await User.findById(id);
+  if (!user) throw new AppError("User not found!", 404);
+  return user;
+};

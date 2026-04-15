@@ -77,6 +77,6 @@ billSchema.index({ bill_type: 1 });
 
 billSchema.index({ month: 1, year: 1 });
 
-billSchema.index({ bill_type: 1, month: 1, year: 1 });
+billSchema.index({ bill_type: 1, month: 1, year: 1 }, { unique: true });
 
 export default mongoose.model("Bill", billSchema);

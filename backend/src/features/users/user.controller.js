@@ -1,6 +1,7 @@
 import {
   createUserService,
   getAllUsers,
+  getUserById,
   toogleStatusService,
   updateUserService,
 } from "./user.service.js";
@@ -53,6 +54,16 @@ export const getUsers = async (req, res, next) => {
       count: users.length,
       users,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// --------------------------------------------------- Get User By ID -------------------------------------------
+export const getSingleUser = async (req, res, next) => {
+  try {
+    const user = await getUserById(req.params.id);
+    res.status(200).json({ success: true, message: "User found!", user });
   } catch (error) {
     next(error);
   }
