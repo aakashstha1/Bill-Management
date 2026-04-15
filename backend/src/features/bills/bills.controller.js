@@ -1,11 +1,12 @@
+import { get } from "mongoose";
 import {
   createMainBill,
   deleteMainBill,
   getAllBills,
   getBillById,
   updateMainBill,
-} from "./bills.service";
-import { validateCreateBill, validateUpdateBill } from "./bills.validation";
+} from "./bills.service.js";
+import { validateCreateBill, validateUpdateBill } from "./bills.validation.js";
 
 // ----------------------------- Get All Bill --------------------------------
 export const getBills = async (req, res, next) => {
@@ -31,10 +32,31 @@ export const getSingleBill = async (req, res, next) => {
 export const createBill = async (req, res, next) => {
   try {
     validateCreateBill(req.body);
-    const bill = await createMainBill(req.body);
-    res
-      .status(201)
-      .json({ success: true, message: "Bill created successfully!", bill });
+
+    const { total_amount, paid_amount, service_charge = 0 } = req.body;
+
+    const total = Number(total_amount);
+    const paid = Number(paid_amount);
+    const service = Number(service_charge);
+
+    // calculate business logic
+    const discount = total - paid;
+    const final_amount = paid + service;
+
+    const data = {
+      ...req.body,
+      createdBy: req.user.id,
+      discount,
+      final_amount,
+    };
+
+    const bill = await createMainBill(data);
+
+    res.status(201).json({
+      success: true,
+      message: "Bill created successfully!",
+      bill,
+    });
   } catch (error) {
     next(error);
   }
@@ -43,11 +65,54 @@ export const createBill = async (req, res, next) => {
 // ----------------------------- Update Bill --------------------------------
 export const updateBill = async (req, res, next) => {
   try {
-    validateUpdateBill(req.body);
-    const bill = await updateMainBill(req.params.id, req.body);
-    res
-      .status(200)
-      .json({ success: true, message: "Bill updated successfully!", bill });
+    const data = { ...req.body };
+
+    delete data.createdBy;
+    delete data.discount;
+    delete data.final_amount;
+
+    validateUpdateBill(data);
+
+    const existingBill = await getBillById(req.params.id);
+
+    if (!existingBill) {
+      return res.status(404).json({
+        success: false,
+        message: "Bill not found",
+      });
+    }
+
+    const total_amount = Number(data.total_amount ?? existingBill.total_amount);
+
+    const paid_amount = Number(data.paid_amount ?? existingBill.paid_amount);
+
+    const service_charge = Number(
+      data.service_charge ?? existingBill.service_charge ?? 0,
+    );
+
+    if (paid_amount > total_amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Paid amount cannot exceed total amount",
+      });
+    }
+
+    const discount = total_amount - paid_amount;
+    const final_amount = paid_amount + service_charge;
+
+    const updatedData = {
+      ...data,
+      discount,
+      final_amount,
+    };
+
+    const bill = await updateMainBill(req.params.id, updatedData);
+
+    res.status(200).json({
+      success: true,
+      message: "Bill updated successfully!",
+      bill,
+    });
   } catch (error) {
     next(error);
   }

@@ -14,7 +14,7 @@ router.use(isAuthenticated, authorizeRoles("admin"));
 router.post("/", createUser);
 router.get("/", getUsers);
 router.get("/:id", getSingleUser);
-router.patch("/:id/update", updateUser);
+router.patch("/:id", updateUser);
 router.patch("/:id/status", toogleStatus);
 
 export default router;

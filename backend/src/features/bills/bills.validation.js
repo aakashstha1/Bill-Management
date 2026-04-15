@@ -1,21 +1,20 @@
 import Joi from "joi";
 import AppError from "../../utils/AppError.js";
 
-// CREATE
-const billSchema = Joi.object({
-  createdBy: Joi.string().length(24).hex().required(),
+// CREATE VALIDATION
+export const billSchema = Joi.object({
+  createdBy: Joi.forbidden(),
 
   units: Joi.number().min(0).required(),
 
   total_amount: Joi.number().min(0).required(),
 
-  paid_amount: Joi.number().min(0).required(),
-
-  final_amount: Joi.number().min(0).required(),
-
-  discount: Joi.number().min(0).optional(),
+  paid_amount: Joi.number().min(0).max(Joi.ref("total_amount")).required(),
 
   service_charge: Joi.number().min(0).optional(),
+
+  discount: Joi.forbidden(),
+  final_amount: Joi.forbidden(),
 
   month: Joi.string()
     .valid(
@@ -41,21 +40,16 @@ const billSchema = Joi.object({
   bill_type: Joi.string().valid("electricity", "water").required(),
 });
 
-//Update
-const billUpdateSchema = Joi.object({
-  createdBy: Joi.string().length(24).hex(),
-
+//Update Validation
+export const billUpdateSchema = Joi.object({
   units: Joi.number().min(0),
-
   total_amount: Joi.number().min(0),
-
   paid_amount: Joi.number().min(0),
-
-  final_amount: Joi.number().min(0),
-
-  discount: Joi.number().min(0),
-
   service_charge: Joi.number().min(0),
+
+  discount: Joi.forbidden(),
+  final_amount: Joi.forbidden(),
+  createdBy: Joi.forbidden(),
 
   month: Joi.string().valid(
     "January",

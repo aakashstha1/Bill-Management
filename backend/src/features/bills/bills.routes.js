@@ -1,6 +1,7 @@
 import express from "express";
 import { isAuthenticated } from "../../middlewares/auth.middleware.js";
-import { authorizeRoled } from "../../middlewares/role.middleware.js";
+import { authorizeRoles } from "../../middlewares/role.middleware.js";
+
 import {
   createBill,
   deleteBill,
@@ -11,11 +12,11 @@ import {
 
 const router = express.Router();
 
-router.use(isAuthenticated, authorizeRoled("admin"));
+router.use(isAuthenticated, authorizeRoles("admin"));
 //Main Bills
 router.post("/", createBill);
-router.get("/", getSingleBill);
-router.get("/:id", getBills);
+router.get("/", getBills);
+router.get("/:id", getSingleBill);
 router.patch("/:id", updateBill);
 router.delete("/:id", deleteBill);
 

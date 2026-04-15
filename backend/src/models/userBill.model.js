@@ -26,7 +26,6 @@ const userBillSchema = new mongoose.Schema(
     ele_amount: {
       type: Number,
       min: 0,
-      required: true,
     },
 
     // WATER CHARGE
@@ -41,13 +40,11 @@ const userBillSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
-      required: true,
     },
 
-    total_amount: {
+    final_amount: {
       type: Number,
       min: 0,
-      required: true,
     },
 
     paid: {
@@ -86,6 +83,6 @@ userBillSchema.index({ user: 1 });
 
 userBillSchema.index({ month: 1, year: 1 });
 
-userBillSchema.index({ user: 1, month: 1, year: 1 });
+userBillSchema.index({ user: 1, month: 1, year: 1 }, { unique: true });
 
 export default mongoose.model("UserBill", userBillSchema);

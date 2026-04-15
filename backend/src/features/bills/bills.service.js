@@ -1,4 +1,5 @@
 import Bill from "../../models/bill.model.js";
+import AppError from "../../utils/AppError.js";
 
 // ----------------------------- Get All Bill --------------------------------
 export const getAllBills = async () => {
@@ -15,7 +16,6 @@ export const getBillById = async (id) => {
 
 // ----------------------------- Create Main Bill --------------------------------
 export const createMainBill = async (data) => {
-  const bill = await Bill.create(data);
   const existing = await Bill.findOne({
     bill_type: data.bill_type,
     month: data.month,
@@ -23,25 +23,26 @@ export const createMainBill = async (data) => {
   });
 
   if (existing) throw new AppError("Bill already exists!", 409);
+  const bill = await Bill.create(data);
 
   return bill;
 };
 
 // ----------------------------- Update Main Bill --------------------------------
 export const updateMainBill = async (id, data) => {
+  const existing = await Bill.findOne({
+    bill_type: data.bill_type,
+    month: data.month,
+    year: data.year,
+    _id: { $ne: id }, //exclude current document (used to prevent matching itself during update checks)
+  });
+
+  if (existing) throw new AppError("Bill already exists!", 409);
   const bill = await Bill.findByIdAndUpdate(id, data, {
     returnDocument: "after",
   });
 
   if (!bill) throw new AppError("Bill not found!", 404);
-
-  const existing = await Bill.findOne({
-    bill_type: data.bill_type,
-    month: data.month,
-    year: data.year,
-  });
-
-  if (existing) throw new AppError("Bill already exists!", 409);
 
   return bill;
 };
