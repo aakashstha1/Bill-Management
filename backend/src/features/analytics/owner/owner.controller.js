@@ -1,10 +1,11 @@
+import { validateAnalyticsQuery } from "../shared/analytics.utils.js";
 import {
-  getActiveUsersPaidAnalyticsService,
   getAllTimePaidAnalyticsService,
+  getAllusersAndOwnerPaidAnalyticsService,
   getOwnerPaidAnalyticsService,
   getPaidAnalyticsService,
-} from "./analytics.service.js";
-import { validateAnalyticsQuery } from "./analytics.validation.js";
+  getTotalBillCompareService,
+} from "./owner.service.js";
 
 //---------------------------------- Get Paid Total year/month ------------------------------------------------
 export const getPaidAnalytics = async (req, res, next) => {
@@ -38,25 +39,6 @@ export const getAllTimePaidAnalytics = async (req, res, next) => {
   }
 };
 
-//---------------------------------- Get Active Users Paid Total ------------------------------------------------
-export const getActiveUsersPaidAnalytics = async (req, res, next) => {
-  try {
-    validateAnalyticsQuery(req.query);
-
-    const year = req.query.year ? Number(req.query.year) : undefined;
-    const month = req.query.month;
-
-    const data = await getActiveUsersPaidAnalyticsService(year, month);
-
-    res.status(200).json({
-      success: true,
-      data,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 //---------------------------------- Get Owner Paid Total ------------------------------------------------
 export const getOwnerPaidAnalytics = async (req, res, next) => {
   try {
@@ -71,6 +53,29 @@ export const getOwnerPaidAnalytics = async (req, res, next) => {
       success: true,
       data,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+//---------------------------------- Get Two Year Total Bill Compare ------------------------------------------------
+export const getTwoYearTotalBillCompare = async (req, res, next) => {
+  try {
+    const data = await getTotalBillCompareService();
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllusersAndOwnerPaidAnalytics = async (req, res, next) => {
+  try {
+    validateAnalyticsQuery(req.query);
+
+    const year = req.query.year ? Number(req.query.year) : undefined;
+    const month = req.query.month;
+    const data = await getAllusersAndOwnerPaidAnalyticsService(year, month);
+    res.status(200).json({ success: true, data });
   } catch (error) {
     next(error);
   }

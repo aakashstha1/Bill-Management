@@ -1,5 +1,6 @@
-import Bill from "../../models/bill.model.js";
-import userBill from "../../models/userBill.model.js";
+import Bill from "../../../models/bill.model.js";
+import userBill from "../../../models/userBill.model.js";
+import { getActiveUsersPaidAnalyticsService } from "../user/users.service.js";
 
 //---------------------------------------- Get Paid Total year/month ------------------------------------------------
 export const getPaidAnalyticsService = async (year, month) => {
@@ -59,61 +60,6 @@ export const getAllTimePaidAnalyticsService = async () => {
     electricity_paid: electricity,
     water_paid: water,
   };
-};
-
-//-------------------------------------------- Get Active Users Paid Total ------------------------------------------------
-export const getActiveUsersPaidAnalyticsService = async (year, month) => {
-  const currentYear = new Date().getFullYear();
-
-  const matchStage = {
-    paid: true,
-    year: year || currentYear,
-    ...(month && { month }), // add month only if exists
-  };
-
-  const result = await userBill.aggregate([
-    // 1. filter bill by year/month first (optional optimization)
-    { $match: matchStage },
-
-    // 2. join user
-    {
-      $lookup: {
-        from: "users",
-        localField: "user",
-        foreignField: "_id",
-        as: "user",
-      },
-    },
-    { $unwind: "$user" },
-
-    // 3. only active users
-    {
-      $match: {
-        "user.status": true,
-      },
-    },
-
-    // 4. group by user
-    {
-      $group: {
-        _id: "$user._id",
-        name: { $first: "$user.name" },
-        total_paid: { $sum: "$final_amount" },
-      },
-    },
-
-    // 5. clean output
-    {
-      $project: {
-        _id: 0,
-        userId: "$_id",
-        name: 1,
-        total_paid: 1,
-      },
-    },
-  ]);
-
-  return result;
 };
 
 //-------------------------------------------- Get Owner Paid Total ------------------------------------------------
@@ -187,5 +133,131 @@ export const getOwnerPaidAnalyticsService = async (year, month) => {
     total_owner_paid: electricity_owner_paid + water_owner_paid,
     electricity_owner_paid,
     water_owner_paid,
+  };
+};
+
+//-------------------------------------------- Get Total Bill Compare ------------------------------------------------
+export const getTotalBillCompareService = async () => {
+  const currentYear = new Date().getFullYear();
+  const previousYear = currentYear - 1;
+
+  const monthOrder = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const result = await Bill.aggregate([
+    {
+      $match: {
+        year: { $in: [currentYear, previousYear] },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: "$year",
+          month: "$month",
+        },
+        total: { $sum: "$final_amount" },
+      },
+    },
+    {
+      $addFields: {
+        monthNumber: {
+          $indexOfArray: [monthOrder, "$_id.month"],
+        },
+      },
+    },
+    {
+      $sort: {
+        monthNumber: 1,
+      },
+    },
+  ]);
+
+  // Create fast lookup map
+  const map = {};
+  result.forEach((r) => {
+    map[`${r._id.year}-${r._id.month}`] = r.total;
+  });
+
+  const formatted = monthOrder.map((month) => ({
+    month,
+    currentYear: map[`${currentYear}-${month}`] || 0,
+    previousYear: map[`${previousYear}-${month}`] || 0,
+  }));
+
+  return formatted;
+};
+
+//-------------------------------------------- Get All user and owner Paid year/month ------------------------------------------------
+export const getAllusersAndOwnerPaidAnalyticsService = async (year, month) => {
+  const currentYear = new Date().getFullYear();
+
+  const matchStage = {
+    year: year || currentYear,
+    ...(month && { month }),
+  };
+
+  // MAIN BILL
+  const main = await Bill.aggregate([
+    { $match: matchStage },
+    {
+      $group: {
+        _id: "$bill_type",
+        total_main: { $sum: "$final_amount" },
+      },
+    },
+  ]);
+
+  let eleMain = 0;
+  let waterMain = 0;
+
+  main.forEach((m) => {
+    if (m._id === "electricity") eleMain = m.total_main;
+    if (m._id === "water") waterMain = m.total_main;
+  });
+
+  const total_main = eleMain + waterMain;
+
+  const allUsersPaid = await getActiveUsersPaidAnalyticsService(year, month);
+  const ownerPaid = await getOwnerPaidAnalyticsService(year, month);
+  // const billAmt= await
+
+  const users = allUsersPaid.map((u) => ({
+    name: u.name,
+    total_paid: (u.ele_amount || 0) + (u.water_amount || 0),
+  }));
+
+  const owner = {
+    name: "Owner",
+    total_paid: ownerPaid.total_owner_paid,
+  };
+
+  const usersWithPercent = users.map((u) => ({
+    ...u,
+    percent: total_main ? +((u.total_paid / total_main) * 100).toFixed(2) : 0,
+  }));
+
+  const ownerWithPercent = {
+    ...owner,
+    percent: total_main
+      ? +((owner.total_paid / total_main) * 100).toFixed(2)
+      : 0,
+  };
+  return {
+    users: usersWithPercent,
+    owner: ownerWithPercent,
+    total_main,
   };
 };

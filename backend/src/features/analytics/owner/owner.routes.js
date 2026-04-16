@@ -1,12 +1,13 @@
 import express from "express";
 import {
-  getActiveUsersPaidAnalytics,
   getAllTimePaidAnalytics,
+  getAllusersAndOwnerPaidAnalytics,
   getOwnerPaidAnalytics,
   getPaidAnalytics,
-} from "./analytics.controller.js";
-import { isAuthenticated } from "../../middlewares/auth.middleware.js";
-import { authorizeRoles } from "../../middlewares/role.middleware.js";
+  getTwoYearTotalBillCompare,
+} from "./owner.controller.js";
+import { isAuthenticated } from "../../../middlewares/auth.middleware.js";
+import { authorizeRoles } from "../../../middlewares/role.middleware.js";
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ const router = express.Router();
 router.use(isAuthenticated, authorizeRoles("admin"));
 router.get("/paid/all-time", getAllTimePaidAnalytics);
 router.get("/paid", getPaidAnalytics);
-router.get("/users-paid", getActiveUsersPaidAnalytics);
 router.get("/owner-paid", getOwnerPaidAnalytics);
+router.get("/compare", getTwoYearTotalBillCompare);
+router.get("/both", getAllusersAndOwnerPaidAnalytics);
 
 export default router;

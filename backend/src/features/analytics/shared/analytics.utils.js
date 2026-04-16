@@ -1,5 +1,5 @@
 import Joi from "joi";
-import AppError from "../../utils/AppError.js";
+import AppError from "../../../utils/AppError.js";
 
 const analyticsSchema = Joi.object({
   year: Joi.number().integer().min(2000).max(2100),

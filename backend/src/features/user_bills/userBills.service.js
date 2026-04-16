@@ -34,7 +34,7 @@ export const createUserBillService = async (data) => {
 
 //-------------------------------------- Update Users Bill ------------------------------------------------
 export const updateUserBillService = async (id, data) => {
-  const existing = await Bill.findOne({
+  const existing = await UserBill.findOne({
     user: data.user,
     month: data.month,
     year: data.year,
