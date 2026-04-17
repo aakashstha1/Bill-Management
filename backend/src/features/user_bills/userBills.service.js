@@ -64,3 +64,16 @@ export const toggleBill = async (id) => {
   await userBill.save();
   return userBill.paid;
 };
+
+//-------------------------------------- Get Users Bill By Status ------------------------------------------------
+export const getUserBillsByStatusService = async (paid) => {
+  const filter = {};
+
+  if (paid !== undefined) {
+    filter.paid = paid; // true or false
+  }
+
+  const bills = await UserBill.find(filter).sort({ createdAt: -1 });
+
+  return bills;
+};

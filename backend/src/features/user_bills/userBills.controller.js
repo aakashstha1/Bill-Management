@@ -4,6 +4,7 @@ import {
   getAllUsersBill,
   getUserAllBillsById,
   getUserBillById,
+  getUserBillsByStatusService,
   toggleBill,
   updateUserBillService,
 } from "./userBills.service.js";
@@ -129,13 +130,20 @@ export const deleteUserBill = async (req, res, next) => {
 export const toggleBillStatus = async (req, res, next) => {
   try {
     const bill = await toggleBill(req.params.id);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Bill updated successfully!",
-        paid: bill,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Bill updated successfully!",
+      paid: bill,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserBillsByStatus = async (req, res, next) => {
+  try {
+    const userBills = await getUserBillsByStatusService(req.params.id);
+    res.status(200).json({ success: true, count: userBills.length, userBills });
   } catch (error) {
     next(error);
   }

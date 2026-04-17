@@ -5,6 +5,7 @@ import {
   createUserBill,
   deleteUserBill,
   getUserBillsById,
+  getUserBillsByStatus,
   getUsersBill,
   getUserSingleBillById,
   toggleBillStatus,
@@ -19,6 +20,7 @@ router.post("/", createUserBill);
 // Get all user bills
 router.get("/", getUsersBill);
 
+router.get("/status", getUserBillsByStatus);
 // Get user all bills
 router.get("/user/:id", getUserBillsById);
 
