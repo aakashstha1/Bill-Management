@@ -1,7 +1,12 @@
-import { getMe } from "@/services/auth.service";
+import {
+  getMeAPI,
+  logoutAPI,
+  refreshAccessTokenAPI,
+} from "@/services/auth.service";
 import { useEffect, useState } from "react";
+import { AuthContext } from "./AuthContext";
 
-export const AUthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -9,10 +14,20 @@ export const AUthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         setLoading(true);
-        const res = await getMe();
+        const res = await getMeAPI();
         setUser(res.data);
-      } catch {
-        setUser(null);
+      } catch (err) {
+        if (err.response?.status === 401) {
+          try {
+            await refreshAccessTokenAPI();
+            const res = await getMeAPI();
+            setUser(res.data);
+          } catch {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -29,7 +44,7 @@ export const AUthProvider = ({ children }) => {
     }
   };
   return (
-    <AuthContext.Provider value={{ user, login, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
