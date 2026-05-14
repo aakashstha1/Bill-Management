@@ -1,5 +1,9 @@
-import AppError from "../../utils/AppError.js";
-import { loginUser, refreshAccessToken, logoutUser } from "./auth.service.js";
+import {
+  loginUser,
+  refreshAccessToken,
+  logoutUser,
+  getMeService,
+} from "./auth.service.js";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -17,7 +21,7 @@ export const login = async (req, res, next) => {
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
-    // set refresh_token 
+    // set refresh_token
     res.cookie("refreshToken", refreshToken, {
       ...COOKIE_OPTIONS,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -59,6 +63,16 @@ export const logout = async (req, res, next) => {
     res.clearCookie("refreshToken", COOKIE_OPTIONS);
 
     res.status(200).json({ success: true, message: "Logout successful!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// --------------------------------------------------- Get me --------------------------------------------------
+export const getMe = async (req, res, next) => {
+  try {
+    const admin = await getMeService(req.user._id);
+    res.json(admin);
   } catch (error) {
     next(error);
   }

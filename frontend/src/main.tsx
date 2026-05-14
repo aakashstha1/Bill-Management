@@ -2,14 +2,20 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
+import { AuthProvider } from "./context/AuthProvider.tsx";
 import { Toaster } from "sonner";
-import { AuthProvider } from "../../frontend/src/context/AuthProvider";
 
-createRoot(document.getElementById("root")).render(
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
       <App />
-      <Toaster />
+      <Toaster richColors />
     </AuthProvider>
   </StrictMode>,
 );

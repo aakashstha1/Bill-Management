@@ -1,14 +1,19 @@
+import { useEffect, useState, type ReactNode } from "react";
+import { AuthContext, type User } from "./AuthContext";
 import {
   getMeAPI,
   logoutAPI,
   refreshAccessTokenAPI,
-} from "@/services/auth.service";
-import { useEffect, useState } from "react";
-import { AuthContext } from "./AuthContext";
+} from "../services/auth.service";
+import type { AxiosError } from "axios";
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+type Props = {
+  children: ReactNode;
+};
+
+export const AuthProvider = ({ children }: Props) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -16,8 +21,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         const res = await getMeAPI();
         setUser(res.data);
-      } catch (err) {
-        if (err.response?.status === 401) {
+      } catch (err: unknown) {
+        const error = err as AxiosError;
+        if (error.response?.status === 401) {
           try {
             await refreshAccessTokenAPI();
             const res = await getMeAPI();
@@ -35,8 +41,8 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = (user) => setUser(user);
-  const logout = async () => {
+  const login = (user: User | null) => setUser(user);
+  const logout = async (): Promise<void> => {
     try {
       await logoutAPI();
     } finally {

@@ -67,3 +67,12 @@ export const logoutUser = async (refreshToken) => {
 
   await User.findByIdAndUpdate(decoded.id, { refreshToken: null });
 };
+
+// --------------------------------------------------- Get Me --------------------------------------------------
+export const getMeService = async (userId) => {
+  const admin = await User.findById(userId).select("-password -refreshToken");
+  if (!admin) {
+    throw new AppError("Admin not found", 404);
+  }
+  return admin;
+};
