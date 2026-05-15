@@ -8,6 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "../components/ui/button";
 import { loginAPI } from "../services/auth.service";
 import { validateLogin } from "../utils/loginValidator";
+import type { AxiosError } from "axios";
 
 function Login() {
   const { login } = useAuth();
@@ -30,9 +31,11 @@ function Login() {
       login(res.user);
       toast.success("Login successful");
       navigate("/dashboard", { replace: true });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as AxiosError<{ message: string }>;
+
       toast.error(
-        error.response?.data?.message || "Login failed. Please try again.",
+        err.response?.data?.message || "Login failed. Please try again.",
       );
     } finally {
       setLoading(false);

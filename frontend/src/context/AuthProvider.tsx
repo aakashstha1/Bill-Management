@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }: Props) => {
       try {
         setLoading(true);
         const res = await getMeAPI();
+        // console.log(res.data);
         setUser(res.data);
       } catch (err: unknown) {
         const error = err as AxiosError;
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }: Props) => {
     checkAuth();
   }, []);
 
-  const login = (user: User | null) => setUser(user);
+  const login = (user: User) => setUser(user);
   const logout = async (): Promise<void> => {
     try {
       await logoutAPI();

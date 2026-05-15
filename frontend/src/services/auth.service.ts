@@ -1,12 +1,7 @@
 import api from "../Api/api";
+import type { LoginData } from "../types/auth.types";
 
-export const loginAPI = async ({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) => {
+export const loginAPI = async ({ email, password }: LoginData) => {
   const { data } = await api.post("/auth/login", {
     email,
     password,

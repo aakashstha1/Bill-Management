@@ -14,7 +14,7 @@ const COOKIE_OPTIONS = {
 // --------------------------------------------------- Login --------------------------------------------------
 export const login = async (req, res, next) => {
   try {
-    const { accessToken, refreshToken } = await loginUser(req.body);
+    const { accessToken, refreshToken, user } = await loginUser(req.body);
     //set access_token
     res.cookie("accessToken", accessToken, {
       ...COOKIE_OPTIONS,
@@ -27,7 +27,7 @@ export const login = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({ success: true, message: "Login successful!" });
+    res.status(200).json({ success: true, message: "Login successful!", user });
   } catch (error) {
     next(error);
   }

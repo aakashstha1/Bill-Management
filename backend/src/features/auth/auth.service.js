@@ -29,7 +29,11 @@ export const loginUser = async ({ email, password }) => {
   user.refreshToken = refreshToken;
   await user.save();
 
-  return { accessToken, refreshToken };
+  const safeUser = await User.findById(user._id).select(
+    "-password -refreshToken",
+  );
+
+  return { accessToken, refreshToken, user: safeUser };
 };
 
 // --------------------------------------------------- Refresh Token --------------------------------------------------
