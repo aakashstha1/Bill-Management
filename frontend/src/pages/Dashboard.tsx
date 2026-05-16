@@ -1,7 +1,9 @@
-import React from "react";
-
 function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <div className="flex flex-col gap-6">
+      <h1>Hello, welcome to your dashboard!</h1>
+    </div>
+  );
 }
 
 export default Dashboard;

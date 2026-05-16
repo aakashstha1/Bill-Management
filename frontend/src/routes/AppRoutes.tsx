@@ -1,9 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "../components/layout/MainLayout";
+import MainLayout from "../layout/MainLayout";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
-import ProtectedRoutes from "./ProtectedRoutes";
+// import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
+import Tenants from "../pages/Tenants";
+import TenantBills from "../pages/TenantBills";
+import MyBills from "../pages/MyBills";
 
 const AppRoute = createBrowserRouter([
   {
@@ -16,7 +19,7 @@ const AppRoute = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoutes />,
+    // element: <ProtectedRoutes />,
     children: [
       {
         path: "dashboard",
@@ -25,6 +28,18 @@ const AppRoute = createBrowserRouter([
           {
             index: true,
             element: <Dashboard />,
+          },
+          {
+            path: "users",
+            element: <Tenants />,
+          },
+          {
+            path: "users-bill",
+            element: <TenantBills />,
+          },
+          {
+            path: "owner-bills",
+            element: <MyBills />,
           },
         ],
       },

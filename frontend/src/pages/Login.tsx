@@ -1,4 +1,5 @@
-import { Eye, EyeClosed } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Field, FieldGroup, FieldLabel } from "../components/ui/field";
@@ -33,7 +34,7 @@ function Login() {
       navigate("/dashboard", { replace: true });
     } catch (error: unknown) {
       const err = error as AxiosError<{ message: string }>;
-
+      console.log(err);
       toast.error(
         err.response?.data?.message || "Login failed. Please try again.",
       );
@@ -45,7 +46,7 @@ function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <FieldGroup className="w-full max-w-md p-6 bg-white rounded-xl shadow-md space-y-1">
         <h2 className="text-2xl font-semibold text-center">Login</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -74,7 +75,11 @@ function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
               >
-                {showPassword ? <Eye /> : <EyeClosed />}
+                {showPassword ? (
+                  <FontAwesomeIcon icon={faEye} />
+                ) : (
+                  <FontAwesomeIcon icon={faEyeSlash} />
+                )}
               </button>
             </div>
           </Field>

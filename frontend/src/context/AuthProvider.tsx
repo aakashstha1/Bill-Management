@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AuthContext, type User } from "./AuthContext";
 import {
   getMeAPI,
@@ -13,12 +13,15 @@ type Props = {
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const hasChecked = useRef(false);
 
   useEffect(() => {
     const checkAuth = async () => {
+      if (hasChecked.current) return; // prevent multiple checks
+      hasChecked.current = true;
       try {
-        setLoading(true);
         const res = await getMeAPI();
         // console.log(res.data);
         setUser(res.data);

@@ -39,19 +39,19 @@ export const loginUser = async ({ email, password }) => {
 // --------------------------------------------------- Refresh Token --------------------------------------------------
 export const refreshAccessToken = async (refreshToken) => {
   if (!refreshToken) {
-    throw new AppError("No refresh token provided", 401);
+    return null; // no token provided, treat as not logged in
   }
 
   let decoded;
   try {
     decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY);
   } catch {
-    throw new AppError("Invalid or expired refresh token", 403);
+    return null;
   }
 
   const user = await User.findById(decoded.id);
   if (!user || user.refreshToken !== refreshToken) {
-    throw new AppError("Invalid refresh token", 403);
+    return null;
   }
 
   const newAccessToken = generateToken(user);

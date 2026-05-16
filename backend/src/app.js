@@ -8,6 +8,7 @@ import billRoutes from "./features/bills/bills.routes.js";
 import userBillsRoutes from "./features/user_bills/userBills.routes.js";
 import ownerAnalyticsRoutes from "./features/analytics/owner/owner.routes.js";
 import userAnalyticsRoutes from "./features/analytics/user/users.routes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const app = express();
 app.use(express.json());
@@ -25,5 +26,7 @@ app.use("/api/bills", billRoutes);
 app.use("/api/user-bills", userBillsRoutes);
 app.use("/api/analytics/owner", ownerAnalyticsRoutes);
 app.use("/api/analytics/user", userAnalyticsRoutes);
+
+app.use(errorHandler);
 
 export default app;

@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthProvider.tsx";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 const rootElement = document.getElementById("root");
 
@@ -14,8 +15,10 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
-      <App />
-      <Toaster richColors />
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
+      <Toaster richColors position="top-right" />
     </AuthProvider>
   </StrictMode>,
 );
