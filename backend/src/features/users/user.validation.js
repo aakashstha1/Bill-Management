@@ -22,8 +22,8 @@ const userUpdateSchema = Joi.object({
       "string.pattern.base":
         "Contact must start with 98 or 97 and be 10 digits",
     }),
-  email: Joi.string().email(),
-}).min(1); 
+  email: Joi.string().email().allow("").optional(),
+}).min(1);
 
 export const validateCreateUser = (data) => {
   const { error } = userSchema.validate(data);

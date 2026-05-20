@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -18,12 +17,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useLogout } from "../hooks/useLogout";
+import { toast } from "sonner";
+import { useSidebarStore } from "../stores/sidebar.store";
+// import { useMe } from "../hooks/useMe";
 
 function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const { user } = useAuth();
+  // const { data: user } = useMe();
+  const { mutate, isPending } = useLogout();
+  // const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
+  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
 
   const navItems = [
     {
@@ -45,8 +52,12 @@ function Sidebar() {
   ];
 
   const handleLogout = () => {
-    logout();
-    navigate("/", { replace: true });
+    mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Logout successful");
+        navigate("/", { replace: true });
+      },
+    });
   };
 
   return (
@@ -58,7 +69,7 @@ function Sidebar() {
       {/* Toggle button */}
       <div className="flex items-center justify-end px-3 py-3 border-b border-gray-100">
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={toggleSidebar}
           className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition"
         >
           {sidebarOpen ? (
@@ -149,8 +160,12 @@ function Sidebar() {
         </div>
         {/* Logout Button  */}
         <Tooltip>
-          <TooltipTrigger>
-            <Button className="w-full rounded-xl" onClick={handleLogout}>
+          <TooltipTrigger asChild>
+            <Button
+              className="w-full rounded-xl"
+              onClick={handleLogout}
+              disabled={isPending}
+            >
               <h1 className={`text-base ${sidebarOpen ? "block" : "hidden"}`}>
                 Logout
               </h1>

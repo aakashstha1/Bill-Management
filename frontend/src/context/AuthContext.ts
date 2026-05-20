@@ -1,16 +1,12 @@
 import { createContext } from "react";
+import type { User } from "../types/user.types";
 
-export type User = {
-  readonly _id: string;
-  name: string;
-  email: string;
-  role: string;
-};
 export type AuthContextType = {
   user: User | null;
-  login: (user: User) => void;
-  logout: () => Promise<void>;
+  // login: (user: User) => void;
+  // logout: () => Promise<void>;
   loading: boolean;
+  isAuthenticated: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(

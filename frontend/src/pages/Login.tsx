@@ -5,19 +5,21 @@ import { useNavigate } from "react-router-dom";
 import { Field, FieldGroup, FieldLabel } from "../components/ui/field";
 import { toast } from "sonner";
 import { Input } from "../components/ui/input";
-import { useAuth } from "../hooks/useAuth";
+// import { useAuth } from "../hooks/useAuth";
 import { Button } from "../components/ui/button";
-import { loginAPI } from "../services/auth.service";
+// import { loginAPI } from "../services/auth.service";
 import { validateLogin } from "../utils/loginValidator";
 import type { AxiosError } from "axios";
+import { useLogin } from "../hooks/useLogin";
 
 function Login() {
-  const { login } = useAuth();
+  // const { login } = useAuth();
+  const { mutate, isPending } = useLogin();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,21 +28,38 @@ function Login() {
       toast.error(Object.values(error)[0]);
       return;
     }
-    setLoading(true);
-    try {
-      const res = await loginAPI({ email, password });
-      login(res.user);
-      toast.success("Login successful");
-      navigate("/dashboard", { replace: true });
-    } catch (error: unknown) {
-      const err = error as AxiosError<{ message: string }>;
-      console.log(err);
-      toast.error(
-        err.response?.data?.message || "Login failed. Please try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   const res = await loginAPI({ email, password });
+    //   login(res.user);
+    //   toast.success("Login successful");
+    //   navigate("/dashboard", { replace: true });
+    // } catch (error: unknown) {
+    //   const err = error as AxiosError<{ message: string }>;
+    //   console.log(err);
+    //   toast.error(
+    //     err.response?.data?.message || "Login failed. Please try again.",
+    //   );
+    // } finally {
+    //   setLoading(false);
+    // }
+
+    mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          toast.success(data?.message || "Login successful");
+          navigate("/dashboard", { replace: true });
+        },
+        onError: (err: unknown) => {
+          const error = err as AxiosError<{ message: string }>;
+
+          toast.error(
+            error.response?.data?.message || "Login failed. Please try again.",
+          );
+        },
+      },
+    );
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -85,8 +104,8 @@ function Login() {
           </Field>
 
           {/* Button */}
-          <Button className="w-full mt-2" type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          <Button className="w-full mt-2" type="submit" disabled={isPending}>
+            {isPending ? "Logging in..." : "Login"}
           </Button>
         </form>
       </FieldGroup>

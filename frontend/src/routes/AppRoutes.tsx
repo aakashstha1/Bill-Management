@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
-// import ProtectedRoutes from "./ProtectedRoutes";
+import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
 import Tenants from "../pages/Tenants";
 import TenantBills from "../pages/TenantBills";
@@ -19,7 +19,7 @@ const AppRoute = createBrowserRouter([
     ],
   },
   {
-    // element: <ProtectedRoutes />,
+    element: <ProtectedRoutes />,
     children: [
       {
         path: "dashboard",

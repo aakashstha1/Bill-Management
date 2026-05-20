@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -8,52 +9,113 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Field, FieldGroup } from "./ui/field";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { FieldGroup } from "./ui/field";
 
+import { useCreateUser } from "../hooks/users/useCreateUser";
+import { toast } from "sonner";
+import type { AxiosError } from "axios";
+import FormInput from "./shared/FormInput";
+
+// Input Form Component
+
+//Main Function
 function CreateTenant() {
+  const [open, setOpen] = useState(false);
+  const { mutate, isPending } = useCreateUser();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contact: "",
+  });
+  // console.log("FormData:", formData);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const payload = {
+      ...formData,
+      email: formData.email || undefined,
+    };
+
+    mutate(payload, {
+      onSuccess: (data) => {
+        setFormData({
+          name: "",
+          email: "",
+          contact: "",
+        });
+        toast.success(data?.message || "Tenant created successfully");
+        setOpen(false);
+      },
+      onError: (err: unknown) => {
+        const error = err as AxiosError<{ message: string }>;
+
+        toast.error(
+          error?.response?.data?.message || "Failed to create tenant",
+        );
+      },
+    });
+  };
+
   return (
     <div>
-      <Dialog>
-        <form>
-          <DialogTrigger asChild>
-            <Button className="rounded-lg">
-              Create Tenant <span className="text-2xl">+</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-sm">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button className="rounded-lg">
+            Create Tenant <span className="text-2xl">+</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-sm">
+          <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle className="font-bold text-lg">
                 Fill Tenant Details's
               </DialogTitle>
             </DialogHeader>
             <FieldGroup className="gap-4">
-              <Field>
-                <Label htmlFor="name">
-                  Name<span className="text-red-500">*</span>
-                </Label>
-                <Input id="name" name="name" />
-              </Field>
-              <Field>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email-1" name="email" />
-              </Field>
-              <Field>
-                <Label htmlFor="contact">
-                  Contact<span className="text-red-500">*</span>
-                </Label>
-                <Input id="contact" name="contact" />
-              </Field>
+              <FormInput
+                id="name"
+                name="name"
+                label="Name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+              />
+
+              <FormInput
+                id="email"
+                name="email"
+                label="Email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+
+              <FormInput
+                id="contact"
+                name="contact"
+                label="Contact"
+                required
+                value={formData.contact}
+                onChange={handleChange}
+              />
             </FieldGroup>
-            <DialogFooter>
+            <DialogFooter className="mt-4">
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Creating..." : "Create"}
+              </Button>
             </DialogFooter>
-          </DialogContent>
-        </form>
+          </form>
+        </DialogContent>
       </Dialog>
     </div>
   );
