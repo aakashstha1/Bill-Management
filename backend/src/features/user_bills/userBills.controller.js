@@ -1,3 +1,4 @@
+import { getUserById } from "../users/user.service.js";
 import {
   createUserBillService,
   deleteUserBillService,
@@ -63,9 +64,12 @@ export const createUserBill = async (req, res, next) => {
     const data = { ...req.body, ele_amount, final_amount };
 
     const bill = await createUserBillService(data);
-    res
-      .status(201)
-      .json({ success: true, message: "Bill created successfully!", bill });
+    const tenant = await getUserById(bill.user);
+    res.status(201).json({
+      success: true,
+      message: `Bill created successfully for ${tenant?.name}!`,
+      bill,
+    });
   } catch (error) {
     next(error);
   }

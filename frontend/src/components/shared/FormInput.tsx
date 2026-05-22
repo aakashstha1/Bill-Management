@@ -9,7 +9,7 @@ type FormInputProps = {
   label: string;
   required?: boolean;
   type?: string;
-  value: string;
+  value: string | number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -18,7 +18,7 @@ function FormInput({
   name,
   label,
   required,
-  type = "text",
+  type,
   value,
   onChange,
 }: FormInputProps) {

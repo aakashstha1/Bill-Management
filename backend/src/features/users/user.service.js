@@ -35,8 +35,14 @@ export const toogleStatusService = async (id) => {
 };
 
 // --------------------------------------------------- Get All Users -------------------------------------------
-export const getAllUsers = async () => {
-  const users = await User.find({ role: "user" }).sort({ createdAt: -1 });
+export const getAllUsers = async (status) => {
+  const query = { role: "user" };
+
+  if (status !== undefined) {
+    query.status = status;
+  }
+
+  const users = await User.find(query).sort({ createdAt: -1 });
   return users;
 };
 

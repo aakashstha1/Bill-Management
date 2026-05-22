@@ -8,6 +8,8 @@ export type User = {
 };
 
 export type Users = {
+  success: true;
+  count: number;
   users: User[];
 };
 
@@ -23,11 +25,23 @@ export type CreateUserResponse = {
   user: User;
 };
 
-// export type UpdateUserPayload = {
-//   id: string;
-// } & Partial<Pick<User, "name" | "email" | "contact">>;
-// export type UpdateUserResponse = {
-//   success: boolean;
-//   message: string;
-//   user: User;
-// };
+export type UpdateUserPayload = {
+  id: string;
+} & Partial<Pick<User, "name" | "email" | "contact">>;
+
+export type UpdateUserResponse = {
+  success: boolean;
+  message: string;
+  user: User;
+};
+
+export type UpdateStatusPayload = {
+  id: string;
+  status: boolean;
+};
+
+export type UpdateStatusResponse = {
+  success: boolean;
+  message: string;
+  userStatus: boolean;
+};

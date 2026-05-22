@@ -18,18 +18,18 @@ export const billSchema = Joi.object({
 
   month: Joi.string()
     .valid(
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "baisakh",
+      "jestha",
+      "ashadh",
+      "shrawan",
+      "bhadra",
+      "ashwin",
+      "kartik",
+      "mangsir",
+      "poush",
+      "magh",
+      "falgun",
+      "chaitra",
     )
     .required(),
 
@@ -52,18 +52,18 @@ export const billUpdateSchema = Joi.object({
   createdBy: Joi.forbidden(),
 
   month: Joi.string().valid(
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "baisakh",
+    "jestha",
+    "ashadh",
+    "shrawan",
+    "bhadra",
+    "ashwin",
+    "kartik",
+    "mangsir",
+    "poush",
+    "magh",
+    "falgun",
+    "chaitra",
   ),
 
   year: Joi.number(),
@@ -72,7 +72,6 @@ export const billUpdateSchema = Joi.object({
 
   bill_type: Joi.string().valid("electricity", "water"),
 }).min(1);
-
 
 // ------------------------------------------------- Validate Bill Creation ---------------------------------
 export const validateCreateBill = (data) => {

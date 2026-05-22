@@ -48,7 +48,11 @@ export const toogleStatus = async (req, res, next) => {
 // --------------------------------------------------- Get All users -------------------------------------------
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsers();
+    const status =
+      req.query.status !== undefined ? req.query.status === "true" : undefined;
+
+    const users = await getAllUsers(status);
+
     res.status(200).json({
       success: true,
       count: users.length,

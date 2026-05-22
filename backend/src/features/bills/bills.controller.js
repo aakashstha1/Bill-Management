@@ -40,8 +40,8 @@ export const createBill = async (req, res, next) => {
     const service = Number(service_charge);
 
     // calculate business logic
-    const discount = total - paid;
-    const final_amount = paid + service;
+    const final_amount = total + service;
+    const discount = final_amount - paid;
 
     const data = {
       ...req.body,
@@ -97,8 +97,8 @@ export const updateBill = async (req, res, next) => {
       });
     }
 
-    const discount = total_amount - paid_amount;
-    const final_amount = paid_amount + service_charge;
+    const final_amount = total_amount + service_charge;
+    const discount = final_amount - paid_amount;
 
     const updatedData = {
       ...data,

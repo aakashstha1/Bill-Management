@@ -16,8 +16,6 @@ import { toast } from "sonner";
 import type { AxiosError } from "axios";
 import FormInput from "./shared/FormInput";
 
-// Input Form Component
-
 //Main Function
 function CreateTenant() {
   const [open, setOpen] = useState(false);
@@ -77,11 +75,12 @@ function CreateTenant() {
                 Fill Tenant Details's
               </DialogTitle>
             </DialogHeader>
-            <FieldGroup className="gap-4">
+            <FieldGroup className="gap-4 mt-4">
               <FormInput
                 id="name"
                 name="name"
                 label="Name"
+                type="text"
                 required
                 value={formData.name}
                 onChange={handleChange}
@@ -91,6 +90,7 @@ function CreateTenant() {
                 id="email"
                 name="email"
                 label="Email"
+                type="text"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -99,6 +99,7 @@ function CreateTenant() {
                 id="contact"
                 name="contact"
                 label="Contact"
+                type="text"
                 required
                 value={formData.contact}
                 onChange={handleChange}

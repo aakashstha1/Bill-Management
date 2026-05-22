@@ -2,15 +2,19 @@ import UserBill from "../../models/userBill.model.js";
 import AppError from "../../utils/AppError.js";
 //-------------------------------------- Get All Users Bill ------------------------------------------------
 export const getAllUsersBill = async () => {
-  const usersBills = await UserBill.find({}).sort({ createdAt: -1 });
+  const usersBills = await UserBill.find({})
+    .populate("user", "name")
+    .sort({ createdAt: -1 });
   return usersBills;
 };
 
 //-------------------------------------- Get Users All Bill By Id ---------------------------------------------
 export const getUserAllBillsById = async (id) => {
-  const userBills = await UserBill.find({ user: id }).sort({
-    createdAt: -1,
-  });
+  const userBills = await UserBill.find({ user: id })
+    .populate("user", "name")
+    .sort({
+      createdAt: -1,
+    });
   return userBills;
 };
 
