@@ -97,13 +97,13 @@ node -v
 If Node is not installed, download it from:
 https://nodejs.org
 
-### 1. Clone the Repository
+#### 1. Clone the Repository
 ```bash
 git clone <your-repo-url>
 cd project-name
 ```
 
-⚙️ 2. Environment Variables Setup
+#### 2. Environment Variables Setup
 
 You need .env files in both frontend and backend.
 
@@ -123,25 +123,32 @@ frontend/.env
 
 👉 Check .env.example
 
-📦 3. Install Dependencies
+#### 3. Install Dependencies
 Frontend
+```bash
 cd frontend
 pnpm install
+```
 
 Backend
+```bash
 cd backend
 npm install
+```
 
-▶️ 4. Run the Project
+#### 4. Run the Project
 Start Backend
+```bash
 npm run dev
+```
 
-👉 On first run:
+On first run:
 
 System checks if admin exists
 If not, it automatically creates a default admin user.
 
 Open a new terminal:
-
+```bash
 cd frontend
 pnpm run dev
+```
