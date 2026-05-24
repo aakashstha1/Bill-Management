@@ -80,7 +80,7 @@ project-root/
 └── README.md
 ```
 
-### To Run This Project
+## To Run This Project
 📌 Prerequisites
 
 Make sure you have installed:
@@ -90,15 +90,18 @@ npm or pnpm
 Git
 
 Check Node version:
-
+```bash
 node -v
+```
 
 If Node is not installed, download it from:
 https://nodejs.org
 
-📥 1. Clone the Repository
+### 1. Clone the Repository
+```bash
 git clone <your-repo-url>
 cd project-name
+```
 
 ⚙️ 2. Environment Variables Setup
 
