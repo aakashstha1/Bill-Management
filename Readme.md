@@ -107,17 +107,9 @@ cd project-name
 
 You need .env files in both frontend and backend.
 
-📌 Backend .env
-
 Create:
 
 backend/.env
-
-👉 Check .env.example
-
-📌 Frontend .env
-
-Create:
 
 frontend/.env
 
