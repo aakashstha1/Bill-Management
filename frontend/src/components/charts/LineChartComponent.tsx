@@ -3,35 +3,47 @@ import {
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import type { LineChartPoint } from "../../utils/NepaliChart";
 
-type ChartData = {
-  name: string;
-  users: number;
+type Props = {
+  data?: LineChartPoint[];
+  currentYearLabel?: string;
+  previousYearLabel?: string;
 };
 
-const data: ChartData[] = [
-  { name: "Jan", users: 400 },
-  { name: "Feb", users: 300 },
-  { name: "Mar", users: 500 },
-  { name: "Apr", users: 200 },
-];
-
-export default function LineChartComponent() {
+export default function LineChartComponent({
+  data,
+  currentYearLabel = "Current year",
+  previousYearLabel = "Previous year",
+}: Props) {
   return (
-    <div className="w-full h-80">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-96 bg-white rounded-xl shadow p-4">
+      <h2 className="text-lg font-semibold mb-4">
+        Year-over-year paid comparison
+      </h2>
+      <ResponsiveContainer width="100%" height="90%">
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="month" />
           <YAxis />
-          <Tooltip />
+          <Tooltip labelFormatter={(label) => String(label)} />
           <Legend />
-          <Line type="monotone" dataKey="users" stroke="#22c55e" />
+
+          <Line
+            name={currentYearLabel}
+            dataKey="currentYear"
+            stroke="#3b82f6"
+            strokeWidth={2}
+          />
+          <Line
+            name={previousYearLabel}
+            dataKey="previousYear"
+            stroke="#ef4444"
+            strokeWidth={2}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

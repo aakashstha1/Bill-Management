@@ -1,7 +1,8 @@
 import userBill from "../../../models/userBill.model.js";
+import { getCurrentBsYear } from "../shared/nepaliDate.js";
 //-------------------------------------------- Get Active Users Paid Total ------------------------------------------------
 export const getActiveUsersPaidAnalyticsService = async (year, month) => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentBsYear();
 
   const matchStage = {
     paid: true,

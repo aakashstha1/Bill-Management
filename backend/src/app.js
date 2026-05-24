@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 
 import authRoutes from "./features/auth/auth.routes.js";
 import userRoutes from "./features/users/user.routes.js";
@@ -16,6 +17,16 @@ app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+
+const authLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 min
+    max: 5,
+    message: { success: false, message: "Too many login attempts. Try again later." },
+  });
+  
+  app.use("/api/auth/login", authLimiter);
 
 app.get("/", (req, res) => res.send("Backend API is Available!"));
 

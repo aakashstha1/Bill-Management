@@ -1,10 +1,11 @@
 import Bill from "../../../models/bill.model.js";
 import userBill from "../../../models/userBill.model.js";
+import { getCurrentBsYear } from "../shared/nepaliDate.js";
 import { getActiveUsersPaidAnalyticsService } from "../user/users.service.js";
 
 //---------------------------------------- Get Paid Total year/month ------------------------------------------------
 export const getPaidAnalyticsService = async (year, month) => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentBsYear();
 
   const matchStage = {
     year: year || currentYear,
@@ -16,7 +17,7 @@ export const getPaidAnalyticsService = async (year, month) => {
     {
       $group: {
         _id: "$bill_type",
-        total: { $sum: "$final_amount" },
+        total: { $sum: "$paid_amount" },
       },
     },
   ]);
@@ -42,7 +43,7 @@ export const getAllTimePaidAnalyticsService = async () => {
     {
       $group: {
         _id: "$bill_type",
-        total: { $sum: "$final_amount" },
+        total: { $sum: "$paid_amount" },
       },
     },
   ]);
@@ -64,7 +65,7 @@ export const getAllTimePaidAnalyticsService = async () => {
 
 //-------------------------------------------- Get Owner Paid Total ------------------------------------------------
 export const getOwnerPaidAnalyticsService = async (year, month) => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentBsYear();
 
   const matchStage = {
     year: year || currentYear,
@@ -77,7 +78,7 @@ export const getOwnerPaidAnalyticsService = async (year, month) => {
     {
       $group: {
         _id: "$bill_type",
-        total_main: { $sum: "$final_amount" },
+        total_main: { $sum: "$paid_amount" },
       },
     },
   ]);
@@ -138,22 +139,22 @@ export const getOwnerPaidAnalyticsService = async (year, month) => {
 
 //-------------------------------------------- Get Total Bill Compare ------------------------------------------------
 export const getTotalBillCompareService = async () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentBsYear();
   const previousYear = currentYear - 1;
 
   const monthOrder = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "baisakh",
+    "jestha",
+    "ashadh",
+    "shrawan",
+    "bhadra",
+    "ashwin",
+    "kartik",
+    "mangsir",
+    "poush",
+    "magh",
+    "falgun",
+    "chaitra",
   ];
 
   const result = await Bill.aggregate([
@@ -168,7 +169,7 @@ export const getTotalBillCompareService = async () => {
           year: "$year",
           month: "$month",
         },
-        total: { $sum: "$final_amount" },
+        total: { $sum: "$paid_amount" },
       },
     },
     {
@@ -202,7 +203,7 @@ export const getTotalBillCompareService = async () => {
 
 //-------------------------------------------- Get All user and owner Paid year/month ------------------------------------------------
 export const getAllusersAndOwnerPaidAnalyticsService = async (year, month) => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentBsYear();
 
   const matchStage = {
     year: year || currentYear,
@@ -215,7 +216,7 @@ export const getAllusersAndOwnerPaidAnalyticsService = async (year, month) => {
     {
       $group: {
         _id: "$bill_type",
-        total_main: { $sum: "$final_amount" },
+        total_main: { $sum: "$paid_amount" },
       },
     },
   ]);

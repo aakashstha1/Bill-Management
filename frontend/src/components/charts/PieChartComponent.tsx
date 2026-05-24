@@ -7,31 +7,52 @@ import {
   Legend,
 } from "recharts";
 
-type StatusData = {
+type Slice = {
   name: string;
   value: number;
 };
 
-const data: StatusData[] = [
-  { name: "Active", value: 60 },
-  { name: "Inactive", value: 25 },
-  { name: "Pending", value: 15 },
+type Props = {
+  data: Slice[];
+  title?: string;
+};
+
+const COLORS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
 ];
 
-const COLORS = ["#22c55e", "#ef4444", "#f59e0b"];
+export default function PieChartComponent({
+  data,
+  title = "Payment share (tenants vs owner)",
+}: Props) {
+  if (data.length === 0) {
+    return (
+      <div className="w-full h-96 bg-white rounded-xl shadow p-4 flex items-center justify-center text-muted-foreground">
+        No payment data for this period
+      </div>
+    );
+  }
 
-export default function PieChartComponent() {
   return (
-    <div className="w-full h-100 bg-white rounded-xl shadow p-4">
-      <h2 className="text-lg font-semibold mb-4">User Status</h2>
+    <div className="w-full h-96 bg-white rounded-xl shadow p-4">
+      <h2 className="text-lg font-semibold mb-4">{title}</h2>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="90%">
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            label
+            label={({ name, percent }) =>
+              `${name} (${Math.round((percent ?? 0) * 100)}%)`
+            }
             outerRadius={110}
             dataKey="value"
           >

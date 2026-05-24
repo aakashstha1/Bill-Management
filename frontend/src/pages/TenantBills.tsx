@@ -37,12 +37,23 @@ import type { TenantBill } from "../types/tenantBill.types";
 import { useDeleteUserBill } from "../hooks/tenant-bills/useDeleteUserBill";
 import UpdateUserBill from "../components/UpdateUserBill";
 import { useUpdateTenantBillStatus } from "../hooks/tenant-bills/useUpdateTenantBillStatus";
+import { usePagination } from "../hooks/usePagination";
+import TablePagination from "../components/shared/TablePagination";
+
 function TenantBills() {
   const { data, isLoading } = useFetchTenantBills();
   // console.log(data);
   const { mutate: deleteBill, isPending } = useDeleteUserBill();
   const { mutate, isPending: updatePending } = useUpdateTenantBillStatus();
   const bills = data?.usersBills || [];
+  const {
+    page,
+    setPage,
+    totalPages,
+    paginatedItems,
+    totalItems,
+    getRowNumber,
+  } = usePagination(bills);
   // const [isLoading, setIsLoading] = useState(false);
 
   const [openEdit, setOpenEdit] = useState(false);
@@ -129,15 +140,17 @@ function TenantBills() {
                 <TableHead className="text-right">Water Amount</TableHead>
                 <TableHead className="text-right">Room Amount</TableHead>
                 <TableHead className="text-right">Final Amount</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {bills.map((bill, index) => (
+              {paginatedItems.map((bill, index) => (
                 <TableRow key={bill._id}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {getRowNumber(index)}
+                  </TableCell>
 
                   <TableCell>{bill?.user?.name}</TableCell>
 
@@ -170,7 +183,7 @@ function TenantBills() {
                     {bill?.final_amount}
                   </TableCell>
 
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     <span
                       className={`${bill?.paid ? "bg-green-500" : "bg-amber-500"} px-3 py-1 rounded-lg text-white font-semibold`}
                     >
@@ -216,6 +229,13 @@ function TenantBills() {
               ))}
             </TableBody>
           </Table>
+
+          <TablePagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={setPage}
+          />
 
           <UpdateUserBill
             key={selectedBill?._id}

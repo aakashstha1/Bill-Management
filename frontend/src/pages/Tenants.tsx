@@ -20,11 +20,21 @@ import type { User } from "../types/user.types";
 import { Switch } from "../components/ui/switch";
 import { toast } from "sonner";
 import { useUpdateUserStatus } from "../hooks/users/useUpdateUserStatus";
+import { usePagination } from "../hooks/usePagination";
+import TablePagination from "../components/shared/TablePagination";
 
 function Tenants() {
   const { data, isLoading } = useFetchUsers();
   const { mutate, isPending } = useUpdateUserStatus();
   const users = data?.users || [];
+  const {
+    page,
+    setPage,
+    totalPages,
+    paginatedItems,
+    totalItems,
+    getRowNumber,
+  } = usePagination(users);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -82,9 +92,11 @@ function Tenants() {
             </TableHeader>
 
             <TableBody>
-              {users.map((user, index) => (
+              {paginatedItems.map((user, index) => (
                 <TableRow key={user._id}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {getRowNumber(index)}
+                  </TableCell>
 
                   <TableCell className="font-medium">{user.name}</TableCell>
 
@@ -125,6 +137,13 @@ function Tenants() {
               ))}
             </TableBody>
           </Table>
+
+          <TablePagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={setPage}
+          />
 
           <UpdateTenant
             key={selectedUser?._id}

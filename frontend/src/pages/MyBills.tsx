@@ -37,10 +37,21 @@ import {
 } from "../components/ui/alert-dialog";
 import { useDeleteBill } from "../hooks/bills/useDeleteBill";
 import { toast } from "sonner";
+import { usePagination } from "../hooks/usePagination";
+import TablePagination from "../components/shared/TablePagination";
+
 function MyBills() {
   const { data, isLoading } = useFetchBills();
   const { mutate: deleteBill, isPending } = useDeleteBill();
   const bills = data?.bills || [];
+  const {
+    page,
+    setPage,
+    totalPages,
+    paginatedItems,
+    totalItems,
+    getRowNumber,
+  } = usePagination(bills);
   // const [isLoading, setIsLoading] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
@@ -104,9 +115,11 @@ function MyBills() {
             </TableHeader>
 
             <TableBody>
-              {bills.map((bill, index) => (
+              {paginatedItems.map((bill, index) => (
                 <TableRow key={bill._id}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {getRowNumber(index)}
+                  </TableCell>
 
                   <TableCell className="font-medium">
                     <span
@@ -193,6 +206,13 @@ function MyBills() {
               ))}
             </TableBody>
           </Table>
+
+          <TablePagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={setPage}
+          />
 
           <UpdateMyBill
             key={selectedBill?._id}
