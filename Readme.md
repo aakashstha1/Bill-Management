@@ -78,3 +78,67 @@ project-root/
 │   └── server.js
 │
 └── README.md
+```
+
+### To Run This Project
+📌 Prerequisites
+
+Make sure you have installed:
+
+Node.js (v16+ recommended)
+npm or pnpm
+Git
+
+Check Node version:
+
+node -v
+
+If Node is not installed, download it from:
+https://nodejs.org
+
+📥 1. Clone the Repository
+git clone <your-repo-url>
+cd project-name
+
+⚙️ 2. Environment Variables Setup
+
+You need .env files in both frontend and backend.
+
+📌 Backend .env
+
+Create:
+
+backend/.env
+
+👉 Check .env.example
+
+📌 Frontend .env
+
+Create:
+
+frontend/.env
+
+👉 Check .env.example
+
+📦 3. Install Dependencies
+Frontend
+cd frontend
+pnpm install
+
+Backend
+cd backend
+npm install
+
+▶️ 4. Run the Project
+Start Backend
+npm run dev
+
+👉 On first run:
+
+System checks if admin exists
+If not, it automatically creates a default admin user.
+
+Open a new terminal:
+
+cd frontend
+pnpm run dev
