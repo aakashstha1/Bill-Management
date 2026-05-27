@@ -1,47 +1,99 @@
 import { Card, CardContent } from "../ui/card";
 import type { OwnerPaidAnalyticsData } from "../../types/analytics.types";
-import { faBoltLightning, faDroplet } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoltLightning,
+  faDroplet,
+  faReceipt,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
   analytics?: OwnerPaidAnalyticsData;
+  title?: string;
 };
 
-function OwnerStatCard({ analytics }: Props) {
+type StatItem = {
+  label: string;
+  value: number;
+  icon: typeof faBoltLightning;
+  iconColor: string;
+  iconBg: string;
+  accent: string;
+};
+
+function OwnerStatCard({ analytics, title = "Owner payments" }: Props) {
+  const stats: StatItem[] = [
+    {
+      label: "Total Paid",
+      value: analytics?.total_owner_paid ?? 0,
+      icon: faReceipt,
+      iconColor: "text-violet-500",
+      iconBg: "bg-violet-50 dark:bg-violet-950/40",
+      accent: "from-violet-500/10 to-transparent",
+    },
+    {
+      label: "Electricity",
+      value: analytics?.electricity_owner_paid ?? 0,
+      icon: faBoltLightning,
+      iconColor: "text-amber-500",
+      iconBg: "bg-amber-50 dark:bg-amber-950/40",
+      accent: "from-amber-500/10 to-transparent",
+    },
+    {
+      label: "Water",
+      value: analytics?.water_owner_paid ?? 0,
+      icon: faDroplet,
+      iconColor: "text-sky-500",
+      iconBg: "bg-sky-50 dark:bg-sky-950/40",
+      accent: "from-sky-500/10 to-transparent",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <Card>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Owner total paid</p>
-          <h2 className="text-xl font-bold">
-            {analytics?.total_owner_paid ?? 0}
-          </h2>
-        </CardContent>
-      </Card>
+    <div className="space-y-4">
+      {/* Section Header */}
+      <div className="flex items-center gap-3">
+        <span className="w-1 h-6 rounded-full bg-linear-to-b from-violet-400 to-violet-300 shadow-sm shadow-violet-200" />
+        <h2 className="text-base font-semibold tracking-tight text-foreground">
+          {title}
+        </h2>
+      </div>
 
-      <Card>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Owner electricity <FontAwesomeIcon
-                          icon={faBoltLightning}
-                          style={{ color: "rgb(255, 212, 59)" }}
-                        /></p>
-          <h2 className="text-xl font-bold">
-            {analytics?.electricity_owner_paid ?? 0}
-          </h2>
-        </CardContent>
-      </Card>
+      {/* Stat Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {stats.map((stat) => (
+          <Card
+            key={stat.label}
+            className="relative overflow-hidden border border-border/60 shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            <div
+              className={`absolute inset-0 bg-linear-to-br ${stat.accent} pointer-events-none`}
+            />
 
-      <Card>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Owner water <FontAwesomeIcon
-                          icon={faDroplet}
-                          style={{ color: "rgb(116, 192, 252)" }}
-                        /></p>
-          <h2 className="text-xl font-bold">
-            {analytics?.water_owner_paid ?? 0}
-          </h2>
-        </CardContent>
-      </Card>
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between">
+                <div className="space-y-3">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {stat.label}
+                  </p>
+                  <p className="text-2xl font-bold tabular-nums text-foreground">
+                    {stat.value.toLocaleString()}
+                  </p>
+                </div>
+
+                <div
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${stat.iconBg}`}
+                >
+                  <FontAwesomeIcon
+                    icon={stat.icon}
+                    className={`h-4 w-4 ${stat.iconColor}`}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

@@ -149,23 +149,23 @@ function MyBills() {
                   <TableCell className="text-center">{bill?.units}</TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.total_amount}
+                    {bill?.total_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.service_charge}
+                    {bill?.service_charge?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.final_amount}
+                    {bill?.final_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.paid_amount}
+                    {bill?.paid_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.discount}
+                    {bill?.discount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">

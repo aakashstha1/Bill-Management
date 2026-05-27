@@ -160,27 +160,27 @@ function TenantBills() {
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.ele_units}
+                    {bill?.ele_units?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.ele_rate}
+                    {bill?.ele_rate?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.ele_amount}
+                    {bill?.ele_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.water_amount}
+                    {bill?.water_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.room_amount}
+                    {bill?.room_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
-                    {bill?.final_amount}
+                    {bill?.final_amount?.toFixed(2)}
                   </TableCell>
 
                   <TableCell className="text-center">
