@@ -3,7 +3,7 @@ import AppError from "../../utils/AppError.js";
 
 // ----------------------------- Get All Bill --------------------------------
 export const getAllBills = async () => {
-  const bills = await Bill.find({}).sort({ createdAt: -1 });
+  const bills = await Bill.find({}).sort({ paid_date: -1 });
   return bills;
 };
 
